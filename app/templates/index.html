@@ -6,5 +6,12 @@
         <hr>
         <h1>WebApp</h1>
         <hr>
+        <p>Регион:</p>
+        <p><input type="search" list="character">
+            <datalist id="character">
+                {% for val in option %}
+                <option value="{{ val }}"></option>
+                {% endfor %}
+             </datalist></p>
     </body>
 </html>
