@@ -7,7 +7,7 @@ class Region(db.Model):
     duration = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Region {}>'.format(self.name)
+        return '<Регион: {}, температура {}, продолжительность {}>'.format(self.name, self.temperature, self.duration)
 
 class Material(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,4 +17,4 @@ class Material(db.Model):
     price = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Material {}>'.format(self.name)
+        return '<Материал: {}, теплопроводность {}, толщина {}, цена {}>'.format(self.name, self.thermal, self.depth, self.price)
