@@ -23,8 +23,11 @@ pip install flask
 >>> import flask
 ```
         
-Расширения для Flask	
+Расширения для Flask (Установка всех пакетов по списку)	
 ```
+(venv) $ pip install -r requirements.txt
+/// устанавливаются сразу все расширения
+
 (venv) $ pip install flask-wtf
 (venv) $ pip install flask-sqlalchemy
 (venv) $ pip install flask-migrate

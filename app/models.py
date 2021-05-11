@@ -3,7 +3,7 @@ from app import db
 class Region(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    temperature = db.Column(db.Integer)
+    temperature = db.Column(db.Float)
     duration = db.Column(db.Integer)
 
     def __repr__(self):
@@ -12,9 +12,9 @@ class Region(db.Model):
 class Material(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    thermal = db.Column(db.Integer)
-    depth = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    thermal = db.Column(db.Float)
+    depth = db.Column(db.Float)
+    price = db.Column(db.Float)
 
     def __repr__(self):
         return '<Материал: {}, теплопроводность {}, толщина {}, цена {}>'.format(self.name, self.thermal, self.depth, self.price)
