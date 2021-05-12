@@ -3,8 +3,8 @@ from app import db
 class Region(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    temperature = db.Column(db.Float)
     duration = db.Column(db.Integer)
+    temperature = db.Column(db.Float)  
 
     def __repr__(self):
         return '<Регион: {}, температура {}, продолжительность {}>'.format(self.name, self.temperature, self.duration)
