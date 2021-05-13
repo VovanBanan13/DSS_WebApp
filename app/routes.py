@@ -2,6 +2,7 @@
 from flask import render_template
 from app import app
 from app.models import Region, Material
+from app.forms import Choiсe
 
 @app.route('/')
 @app.route('/index')
@@ -16,5 +17,5 @@ def index():
         'region' : regions,
         'material' : materials
     }
-
-    return render_template('index.html', regions=regions, materials=materials, data=data)
+    form = Choiсe()
+    return render_template('index.html', regions=regions, materials=materials, data=data, form=form)

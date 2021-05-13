@@ -16,7 +16,6 @@
         </p>
         <p>
             <select class = "region">
-                <option selected = "selected">Выберите регион</option>
                 {% for reg in data.region %}
                 <option value="{{ reg }}">{{ reg }}</option>
                 {% endfor %}
@@ -25,11 +24,27 @@
         <p>Материал:</p>
         <p>
             <select class = "material">
-                <option selected = "selected">Выберите материал</option>
                 {% for mat in data.material %}
                 <option value="{{ mat }}">{{ mat }}</option>
                 {% endfor %}
             </select>
         </p>
+
+
+        <hr>
+        <p>Форма:</p>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.region.label }}<br>
+                {{ form.region }}<br>
+            </p>
+            <p>
+                {{ form.material.label }}<br>
+                {{ form.material }}<br>
+            </p>
+        </form>
+
+
     </body>
 </html>
