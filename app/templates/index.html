@@ -9,9 +9,27 @@
         <p>Регион:</p>
         <p><input type="search" list="character">
             <datalist id="character">
-                {% for val in option %}
-                <option value="{{ val }}"></option>
+                {% for reg in regions %}
+                <option value="{{ reg }}"></option>
                 {% endfor %}
-             </datalist></p>
+             </datalist>
+        </p>
+        <p>
+            <select class = "region">
+                <option selected = "selected">Выберите регион</option>
+                {% for reg in data.region %}
+                <option value="{{ reg }}">{{ reg }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>Материал:</p>
+        <p>
+            <select class = "material">
+                <option selected = "selected">Выберите материал</option>
+                {% for mat in data.material %}
+                <option value="{{ mat }}">{{ mat }}</option>
+                {% endfor %}
+            </select>
+        </p>
     </body>
 </html>
