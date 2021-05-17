@@ -6,34 +6,8 @@
         <hr>
         <h1>WebApp</h1>
         <hr>
-        <p>Регион:</p>
-        <p><input type="search" list="character">
-            <datalist id="character">
-                {% for reg in regions %}
-                <option value="{{ reg }}"></option>
-                {% endfor %}
-             </datalist>
-        </p>
-        <p>
-            <select class = "region">
-                {% for reg in data.region %}
-                <option value="{{ reg }}">{{ reg }}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>Материал:</p>
-        <p>
-            <select class = "material">
-                {% for mat in data.material %}
-                <option value="{{ mat }}">{{ mat }}</option>
-                {% endfor %}
-            </select>
-        </p>
-
-
-        <hr>
         <p>Форма:</p>
-        <form action="" method="post">
+        <form action="" method="post" novalidate>
             {{ form.hidden_tag() }}
             <p>
                 {{ form.region.label }}<br>
@@ -43,8 +17,18 @@
                 {{ form.material.label }}<br>
                 {{ form.material }}<br>
             </p>
+            <p>
+                {{ form.submit() }}
+            </p>
         </form>
-
-
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
     </body>
 </html>
