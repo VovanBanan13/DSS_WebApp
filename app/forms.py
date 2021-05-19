@@ -17,11 +17,11 @@ from app.models import Region, Material
 
 class Choiсe(FlaskForm):
     regions_obj = Region.query.all()
-    regions = [x.name for x in regions_obj]
+    # regions = [x.name for x in regions_obj]
 
     materials_obj = Material.query.all()
-    materials = [x.name for x in materials_obj]
 
-    region = SelectField(u'Выберите регион:',choices=[(r, r) for r in regions])
-    material = SelectField(u'Выберите материал:', choices=[(m, m) for m in materials])
+    # region = SelectField(u'Выберите регион:',choices=[(r, r) for r in regions])
+    region = SelectField(u'Выберите регион:', choices=[((r.name, r.duration, r.temperature), r.name) for r in regions_obj])
+    material = SelectField(u'Выберите материал:', choices=[((m.name, m.thermal, m.depth, m.price), m.name) for m in materials_obj])
     submit = SubmitField('Рассчитать')
