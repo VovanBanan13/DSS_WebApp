@@ -4,7 +4,7 @@ from flask.globals import request
 from flask.helpers import flash, url_for
 from app import app
 from app.models import Region, Material
-from app.forms import Choiсe, Choiсe_2
+from app.forms import Choiсe, Choiсe_2, Choiсe_3
 import re
 
 @app.route('/', methods=['GET', 'POST'])
@@ -105,3 +105,55 @@ def lay_2():
         R = 0.00035*D+1.4
 
     return render_template('2.html', form=form)
+
+@app.route('/3', methods=['GET', 'POST'])
+def lay_3():
+    
+    form = Choiсe_3()
+
+    if form.validate_on_submit():
+        region_choices=re.sub("[(|)|']","",form.region.data)
+        region_choice = region_choices.split(",")
+        material_choices_1=re.sub("[(|)|']","",form.material_1.data)
+        material_choice_1 = material_choices_1.split(",")
+        material_choices_2=re.sub("[(|)|']","",form.material_2.data)
+        material_choice_2 = material_choices_2.split(",")
+        material_choices_3=re.sub("[(|)|']","",form.material_3.data)
+        material_choice_3 = material_choices_3.split(",")
+
+        flash('Выбран регион: {}. Материалы: {} и {} и {}'.format(region_choice[0], material_choice_1[0], material_choice_2[0], material_choice_3[0]))
+        flash('-----------------------------------')
+        flash('Duration: {}'.format(region_choice[1]))
+        flash('Temperature: {}'.format(region_choice[2]))
+        flash('-----------------------------------')
+        flash('Thermal: {}'.format(material_choice_1[1]))
+        flash('Depth: {}'.format(material_choice_1[2]))
+        flash('Price: {}'.format(material_choice_1[3]))
+        flash('-----------------------------------')
+        flash('Thermal: {}'.format(material_choice_2[1]))
+        flash('Depth: {}'.format(material_choice_2[2]))
+        flash('Price: {}'.format(material_choice_2[3]))
+        flash('-----------------------------------')
+        flash('Thermal: {}'.format(material_choice_3[1]))
+        flash('Depth: {}'.format(material_choice_3[2]))
+        flash('Price: {}'.format(material_choice_3[3]))
+
+        duration = int(region_choice[1])
+        temperature = float(region_choice[2])
+
+        thermal_1 = float(material_choice_1[1])
+        depth_1 = float(material_choice_1[2])
+        price_1 = float(material_choice_1[3])
+
+        thermal_2 = float(material_choice_2[1])
+        depth_2 = float(material_choice_2[2])
+        price_2 = float(material_choice_2[3])
+
+        thermal_3 = float(material_choice_3[1])
+        depth_3 = float(material_choice_3[2])
+        price_3 = float(material_choice_3[3])
+
+        D = (20 - temperature)*duration
+        R = 0.00035*D+1.4
+
+    return render_template('3.html', form=form)
