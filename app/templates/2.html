@@ -6,7 +6,7 @@
         <hr>
         <h1>WebApp</h1>
         <hr>
-        <a href="/2">Два слоя</a>
+        <a href="/index">Один слой</a>
         <p>Форма:</p>
         <form action="" method="post" novalidate>
             {{ form.hidden_tag() }}
@@ -15,8 +15,9 @@
                 {{ form.region }}<br>
             </p>
             <p>
-                {{ form.material.label }}<br>
-                {{ form.material }}<br>
+                {{ form.material_1.label }}<br>
+                {{ form.material_1 }}<br><br>
+                {{ form.material_2 }}<br>
             </p>
             <p>
                 {{ form.submit() }}

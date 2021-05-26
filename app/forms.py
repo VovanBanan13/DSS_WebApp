@@ -25,3 +25,13 @@ class Choiсe(FlaskForm):
     region = SelectField(u'Выберите регион:', choices=[((r.name, r.duration, r.temperature), r.name) for r in regions_obj])
     material = SelectField(u'Выберите материал:', choices=[((m.name, m.thermal, m.depth, m.price), m.name) for m in materials_obj])
     submit = SubmitField('Рассчитать')
+
+class Choiсe_2(FlaskForm):
+    regions_obj = Region.query.all()
+
+    materials_obj = Material.query.all()
+
+    region = SelectField(u'Выберите регион:', choices=[((r.name, r.duration, r.temperature), r.name) for r in regions_obj])
+    material_1 = SelectField(u'Выберите материал:', choices=[((m.name, m.thermal, m.depth, m.price), m.name) for m in materials_obj])
+    material_2 = SelectField(u'Выберите материал:', choices=[((m.name, m.thermal, m.depth, m.price), m.name) for m in materials_obj])
+    submit = SubmitField('Рассчитать')
