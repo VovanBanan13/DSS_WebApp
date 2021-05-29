@@ -43,8 +43,8 @@ def index():
 
         D = (20 - temperature)*duration
         R = 0.00035*D+1.4
-        R = float('{:.3f}'.format(R))
-        print(R)
+        R = float('{:.4f}'.format(R))
+        # print(R)
 
         S = R * thermal * 1000
         flash('Толщина слоя из "{}" по формуле составляет {} мм'.format(material_choice[0], int(S)))
@@ -89,6 +89,7 @@ def lay_2():
         flash('Thermal: {}'.format(material_choice_2[1]))
         flash('Depth: {}'.format(material_choice_2[2]))
         flash('Price: {}'.format(material_choice_2[3]))
+        flash('-----------------------------------')
 
         duration = int(region_choice[1])
         temperature = float(region_choice[2])
@@ -103,6 +104,23 @@ def lay_2():
 
         D = (20 - temperature)*duration
         R = 0.00035*D+1.4
+        R = float('{:.4f}'.format(R))
+
+        # R_for = R - ((depth_2 * 1)/(thermal_2*1000))
+        # count = int((R_for * thermal_1*1000)/depth_1) + 1
+        # flash('Максимальное число: {}'.format(count))
+        for i in range(1, 101):
+            S_1 = depth_1 * i
+            R_2 = R - ((depth_1 * i)/(thermal_1*1000))
+            j = 1
+            res = 0
+            while (res < R_2):
+                res = (depth_2*j)/(thermal_2*1000)
+                j = j + 1
+            S_2 = depth_2 * j
+            flash('Толщина {} и {} слоёв составляет: {} мм и {} мм (сумма: {})'.format(i, j, int(S_1), int(S_2), S_1+S_2))
+            if (j == 1):
+                break             
 
     return render_template('2.html', form=form)
 
@@ -137,6 +155,7 @@ def lay_3():
         flash('Thermal: {}'.format(material_choice_3[1]))
         flash('Depth: {}'.format(material_choice_3[2]))
         flash('Price: {}'.format(material_choice_3[3]))
+        flash('-----------------------------------')
 
         duration = int(region_choice[1])
         temperature = float(region_choice[2])
@@ -155,5 +174,24 @@ def lay_3():
 
         D = (20 - temperature)*duration
         R = 0.00035*D+1.4
+        R = float('{:.4f}'.format(R))
+
+        for i in range(1, 101):
+            R_2 = R - ((depth_1 * i)/(thermal_1*1000))
+            S_1 = depth_1 * i
+            for j in range(1, 101):
+                S_2 = depth_2 * j
+                R_3 = R_2 - ((depth_2 * j)/(thermal_2*1000))
+                k = 1
+                res = 0
+                while (res < R_3):
+                    res = (depth_3*k)/(thermal_3*1000)
+                    k = k + 1
+                S_3 = depth_3 * k
+                flash('Толщина ({}, {}, {}) слоёв составляет: {} мм, {} мм и {} мм (сумма: {})'.format(i, j, k, int(S_1), int(S_2), int(S_3), S_1+S_2+S_3)) 
+                if (k == 1):
+                    break
+            if (j == 1):
+                break
 
     return render_template('3.html', form=form)
