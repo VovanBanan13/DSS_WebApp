@@ -1,36 +1,85 @@
 <html>
     <head>
         <title>WebApp</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     </head>
     <body>
         <hr>
         <h1>WebApp</h1>
         <hr>
-        <a href="/2">Два слоя</a>
-        <a href="/3">Три слоя</a>
+        <!-- <a href="/2">Два слоя</a>
+        <a href="/3">Три слоя</a> -->
         <p>Форма:</p>
         <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
+            
             <p>
-                {{ form.region.label }}<br>
-                {{ form.region }}<br>
+                <label for="region">Выберите регион:</label>
+                <br>
+                <select name="region" id="region">
+                    {% for region in data.regions %}
+                        <option value="{{ region.id }}">{{ region.name }}</option>
+                    {% endfor %}
+                </select>
             </p>
+
             <p>
-                {{ form.material.label }}<br>
-                {{ form.material }}<br>
+                <label for="material">Выберите материал:</label>
+                <br>
+                <select name="material" class="material">
+                    {% for material in data.materials %}
+                        <option value="{{ material.id }}">{{ material.name }}</option>
+                    {% endfor %}
+                </select>
             </p>
-            <p>
-                {{ form.submit() }}
+
+            <a href="javascript:add()">Добавить</a>
+            <a href="javascript:del()">Удалить</a>
+            <a href="javascript:calculation()">Рассчитать</a>
+
+            <p>Результат:</p>
+            <p class="result">
+
             </p>
+
         </form>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
     </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function add() {
+            if ($('.material').length < 3) {
+                $('.material:last').clone().insertAfter('.material:last');
+            }
+        }
+
+        function del() {
+            if ($('.material').length > 1) {
+                $('.material:last').remove()
+            }
+        }
+
+        function calculation() {
+            region_id = $("#region").val();
+            materials = [];
+
+            material_blocks = $(".material")
+
+            for (let i = 0; i < material_blocks.length; i++) {
+                materials.push({
+                    "material_id": material_blocks[i].value
+                });
+            }
+
+            $.post('/calculation', {
+                region_id: region_id,
+                materials: materials
+            }).done(function(response) {
+                console.log(response);
+                $(".result").text('Result ' + response['region']);
+            }).fail(function() {
+                console.log('error')
+            });
+        }
+    </script>
 </html>
