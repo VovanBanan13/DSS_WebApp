@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, jsonify
 from flask.globals import request
 from flask.helpers import flash, url_for
 from app import app
@@ -10,59 +10,119 @@ import re
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    # regions_obj = Region.query.all()
-    # regions = [x.name for x in regions_obj]
 
-    # materials_obj = Material.query.all()
-    # materials = [x.name for x in materials_obj]
+    regions = [{"id": r.id, "name": r.name} for r in Region.query.all()]
+    materials = [{"id": m.id, "name": m.name} for m in Material.query.all()]
 
-    form = Choiсe()
+    data = {
+        "regions": regions,
+        "materials": materials
+    }
 
-    if form.validate_on_submit():
-        region_choices=re.sub("[(|)|']","",form.region.data)
-        region_choice = region_choices.split(",")
-        material_choices=re.sub("[(|)|']","",form.material.data)
-        material_choice = material_choices.split(",")
+    return render_template('index.html', data=data)
 
-        flash('Выбран регион: {}. Материал: {}'.format(region_choice[0], material_choice[0]))
-        flash('-----------------------------------')
-        flash('Duration: {}'.format(region_choice[1]))
-        flash('Temperature: {}'.format(region_choice[2]))
-        flash('-----------------------------------')
-        flash('Thermal: {}'.format(material_choice[1]))
-        flash('Depth: {}'.format(material_choice[2]))
-        flash('Price: {}'.format(material_choice[3]))
-        flash('-----------------------------------')
+@app.route('/calculation', methods=['POST'])
+def calculation():
+    req_data = request.form
+    material_count = len(req_data) - 1
+    data = None
+    if material_count == 1:
+        data = calc1(req_data['region_id'], req_data['materials[0][material_id]'])
+    elif material_count == 2:
+        data = calc2(req_data['region_id'], req_data['materials[0][material_id]'], req_data['materials[1][material_id]'])
+    return jsonify(data)
 
-        duration = int(region_choice[1])
-        temperature = float(region_choice[2])
+def calc1(region_id, material_id):
+    region_info = Region.query.get(region_id)
+    material_info = Material.query.get(material_id)
 
-        thermal = float(material_choice[1])
-        depth = float(material_choice[2])
-        price = float(material_choice[3])
+    duration = int(region_info.duration)
+    temperature = float(region_info.temperature)
 
-        D = (20 - temperature)*duration
-        R = 0.00035*D+1.4
-        R = float('{:.4f}'.format(R))
-        # print(R)
+    thermal = float(material_info.thermal)
+    depth = float(material_info.depth)
 
-        S = R * thermal * 1000
-        flash('Толщина слоя из "{}" по формуле составляет {} мм'.format(material_choice[0], int(S)))
+    D = (20 - temperature)*duration
+    R = 0.00035*D+1.4
+    R = float('{:.4f}'.format(R))
 
-        i = 1
+    # S_2 = R * thermal * 1000
+
+    i = 1
+    res = 0
+    while (res < R):
+        res = (depth*i)/(thermal*1000)
+        i = i + 1
+    S = depth * i
+
+    data = {
+        "region": region_info.name,
+        "material": material_info.name,
+        "results": [{
+            "i": i,
+            "s": S
+        }]
+    }
+
+    return data
+
+def calc2(region_id, material_id_1, material_id_2):
+    region_info = Region.query.get(region_id)
+    duration = int(region_info.duration)
+    temperature = float(region_info.temperature)
+
+    material_info_1 = Material.query.get(material_id_1)
+    thermal_1 = float(material_info_1.thermal)
+    depth_1 = float(material_info_1.depth)
+
+    material_info_2 = Material.query.get(material_id_2)
+    thermal_2 = float(material_info_2.thermal)
+    depth_2 = float(material_info_2.depth)
+
+    data = {
+        "region": region_info.name,
+        "material_1": material_info_1.name,
+        "material_2": material_info_2.name,
+        "results": []
+    }
+
+    # data = {
+    #     "region": region_info.name,
+    #     "materials": [],
+    #     "results": []
+    # }
+    
+    # req_data = request.form
+    # material_count = len(req_data) - 1
+    # for i in material_count:
+    #     data['materials'].append({"material" : material_info[i]})
+
+    D = (20 - temperature)*duration
+    R = 0.00035*D+1.4
+    R = float('{:.4f}'.format(R))
+
+    for i in range(1, 101):
+        S_1 = depth_1 * i
+        R_2 = R - ((depth_1 * i)/(thermal_1*1000))
+        j = 1
         res = 0
-        while (res < R):
-            res = (depth*i)/(thermal*1000)
-            i = i + 1
-            # print('#{}: {}'.format(i, res))
-        S_2 = depth * i
-        flash('Толщина {} слоёв составляет: {} мм'.format(i, int(S_2)))
+        while (res < R_2):
+            res = (depth_2*j)/(thermal_2*1000)
+            j = j + 1
+        S_2 = depth_2 * j
 
-        # flash('Расчёт произведён, результаты смотрите ниже.')
-        # return redirect(url_for('index'))
-    return render_template('index.html', form=form)
-    # return render_template('index.html', regions=regions, materials=materials, form=form)
-    # return render_template('index.html', form=form)
+        data['results'].append({
+            "i": i,
+            "j":j,
+            "s1": S_1,
+            "s2": S_2
+        })
+
+        if (j == 1):
+            break
+
+    return data
+
 
 @app.route('/2', methods=['GET', 'POST'])
 def lay_2():
