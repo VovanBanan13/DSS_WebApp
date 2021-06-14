@@ -74,7 +74,12 @@
             }).done(function(response) {
                 console.log(response);
                 $(".res_reg").text('Регион: ' + response['region']);
-                if ($('.material').length > 1)
+                if ($('.material').length > 2)
+                {
+                    $(".res_mat").text('Выбраны материалы: ');
+                    $(".res_mat_list").text(response['material_1'] + "<br/><b>" + '\r\n' + response['material_2'] + "<br/><b>" + '\r\n' + response['material_3']);
+                }
+                else if ($('.material').length > 1)
                 {
                     $(".res_mat").text('Выбраны материалы: ');
                     $(".res_mat_list").text(response['material_1'] + "<br/><b>" + '\r\n' + response['material_2']);
@@ -84,13 +89,14 @@
                     $(".res_mat").text('Выбран материал: ');
                     $(".res_mat_list").text(response['material']);
                 }
-                variants = [];
-                for (let i = 0; i < response['results'].length; i++) 
-                {
-                    variants.push({"variant": response['results'][i].value})
-                    $(".result").text(variants);
-                }
-                console.log(variants)
+                // variants = [];
+                // for (let i = 0; i < response['results'].length; i++) 
+                // {
+                //     variants.push({"variant": response['results'][i].value})
+                //     $(".result").text(variants);
+                // }
+                // console.log(variants)
+                $(".result").text('Варианты: ' + response['results']);
             }).fail(function() {
                 console.log('error')
             });

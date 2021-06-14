@@ -30,6 +30,8 @@ def calculation():
         data = calc1(req_data['region_id'], req_data['materials[0][material_id]'])
     elif material_count == 2:
         data = calc2(req_data['region_id'], req_data['materials[0][material_id]'], req_data['materials[1][material_id]'])
+    elif material_count == 3:
+        data = calc3(req_data['region_id'], req_data['materials[0][material_id]'], req_data['materials[1][material_id]'], req_data['materials[2][material_id]'])
     return jsonify(data)
 
 def calc1(region_id, material_id):
@@ -123,6 +125,63 @@ def calc2(region_id, material_id_1, material_id_2):
 
     return data
 
+def calc3(region_id, material_id_1, material_id_2, material_id_3):
+    region_info = Region.query.get(region_id)
+    duration = int(region_info.duration)
+    temperature = float(region_info.temperature)
+
+    material_info_1 = Material.query.get(material_id_1)
+    thermal_1 = float(material_info_1.thermal)
+    depth_1 = float(material_info_1.depth)
+
+    material_info_2 = Material.query.get(material_id_2)
+    thermal_2 = float(material_info_2.thermal)
+    depth_2 = float(material_info_2.depth)
+
+    material_info_3 = Material.query.get(material_id_3)
+    thermal_3 = float(material_info_3.thermal)
+    depth_3 = float(material_info_3.depth)
+
+    data = {
+        "region": region_info.name,
+        "material_1": material_info_1.name,
+        "material_2": material_info_2.name,
+        "material_3": material_info_3.name,
+        "results": []
+    }
+
+    D = (20 - temperature)*duration
+    R = 0.00035*D+1.4
+    R = float('{:.4f}'.format(R))
+
+    for i in range(1, 101):
+        R_2 = R - ((depth_1 * i)/(thermal_1*1000))
+        S_1 = depth_1 * i
+        for j in range(1, 101):
+            S_2 = depth_2 * j
+            R_3 = R_2 - ((depth_2 * j)/(thermal_2*1000))
+            k = 1
+            res = 0
+            while (res < R_3):
+                res = (depth_3*k)/(thermal_3*1000)
+                k = k + 1
+            S_3 = depth_3 * k
+            
+            data['results'].append({
+            "i": i,
+            "j":j,
+            "k":k,
+            "s1": S_1,
+            "s2": S_2,
+            "s3": S_3
+            })
+
+            if (k == 1):
+                break
+        if (j == 1):
+            break
+        
+    return data
 
 @app.route('/2', methods=['GET', 'POST'])
 def lay_2():
