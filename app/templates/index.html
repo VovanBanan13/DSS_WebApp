@@ -1,19 +1,18 @@
 <html>
     <head>
         <title>WebApp</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     </head>
-    <body>
+    <body class="container">
         <hr>
         <h1>WebApp</h1>
         <hr>
-        <!-- <a href="/2">Два слоя</a>
-        <a href="/3">Три слоя</a>
-        <p>Форма:</p> -->
         <form action="" method="post" novalidate>
             <p>
                 <label for="region">Выберите регион:</label>
                 <br>
-                <select name="region" id="region">
+                <select class="form-select" name="region" id="region">
                     {% for region in data.regions %}
                         <option value="{{ region.id }}">{{ region.name }}</option>
                     {% endfor %}
@@ -22,24 +21,33 @@
             <p>
                 <label for="material">Выберите материал:</label>
                 <br>
-                <select name="material" class="material">
+                <select class="material form-select" name="material">
                     {% for material in data.materials %}
                         <option value="{{ material.id }}">{{ material.name }}</option>
                     {% endfor %}
                 </select>
             </p>
             <p>
-                <a href="javascript:add()">Добавить</a>
-                <a href="javascript:del()">Удалить</a>
-                <a href="javascript:calculation()">Рассчитать</a>
-
-                <p>Результат:</p>
-                <p class="res_reg"></p>
-                <p class="res_mat"></p>
-                <p class="res_mat_list"></p>
-                <p class="result"></p>
+                <a class="btn btn-primary" href="javascript:add()">Добавить</a>
+                <a class="btn btn-primary" href="javascript:del()">Удалить</a>
+                <a class="btn btn-primary" href="javascript:calculation()">Рассчитать</a>
             </p>
         </form>
+        <div class="result-info" style="display: none;">
+            <div class="result-info-title">Результат</div>
+            <div class="result-region">
+                <div class="result-region-title">Регион</div>
+                <div class="result-region-info"></div>
+            </div>
+            <div class="result-material">
+                <div class="result-material-title">Выбран материал</div>
+                <div class="result-material-info">
+                    <div class="result-variants-info">
+                        <table class="result-variants-info-table table table-hover"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -73,33 +81,48 @@
                 materials: materials
             }).done(function(response) {
                 console.log(response);
-                $(".res_reg").text('Регион: ' + response['region']);
-                if ($('.material').length > 2)
-                {
-                    $(".res_mat").text('Выбраны материалы: ');
-                    $(".res_mat_list").text(response['material_1'] + "<br/><b>" + '\r\n' + response['material_2'] + "<br/><b>" + '\r\n' + response['material_3']);
-                }
-                else if ($('.material').length > 1)
-                {
-                    $(".res_mat").text('Выбраны материалы: ');
-                    $(".res_mat_list").text(response['material_1'] + "<br/><b>" + '\r\n' + response['material_2']);
-                }
-                else 
-                {
-                    $(".res_mat").text('Выбран материал: ');
-                    $(".res_mat_list").text(response['material']);
-                }
-                // variants = [];
-                // for (let i = 0; i < response['results'].length; i++) 
-                // {
-                //     variants.push({"variant": response['results'][i].value})
-                //     $(".result").text(variants);
-                // }
-                // console.log(variants)
-                $(".result").text('Варианты: ' + response['results']);
+                fillResults(response);
             }).fail(function() {
                 console.log('error')
             });
+        }
+
+        function fillResults(data) {
+            $('.result-info').css('display', 'block')
+            $('.result-variants-info-table').text('');
+
+            $('.result-region-info').text(data['region']);
+
+            theadInner = '';
+            data['materials'].forEach(material => {
+                theadInner += '<th>' + material + '</th>';
+            });
+            theadInner += '<th>Общая ширина</th>';
+            theadInner += '<th>Стоимость</th>';
+            thead = '<thead><tr>' + theadInner + '</tr></thead>';
+
+            tbodyInner = '';
+            data['results'].forEach(variant => {
+                trInner = '';
+
+                sumWidth = 0
+                sumPrice = 0
+                variant.forEach(variantMaterial => {
+                    sumWidth += Number(variantMaterial[1])
+                    sumPrice += Number(variantMaterial[0])
+                    trInner += '<td>' + variantMaterial[0] + ' (' + variantMaterial[1] + ' мм)' + '</td>';
+                });
+
+                trInner += '<td>' + sumWidth + ' мм' + '</td>'
+                trInner += '<td>' + sumPrice + ' RUB' + '</td>'
+
+                tbodyInner += '<tr>' + trInner + '</tr>';
+            });
+
+            tbody = '<tbody>' + tbodyInner + '</tbody>';
+            table = thead + tbody
+            
+            $('.result-variants-info-table').append(table);
         }
     </script>
 </html>

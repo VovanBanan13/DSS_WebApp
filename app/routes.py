@@ -59,11 +59,10 @@ def calc1(region_id, material_id):
 
     data = {
         "region": region_info.name,
-        "material": material_info.name,
-        "results": [{
-            "i": i,
-            "s": S
-        }]
+        "materials": [material_info.name],
+        "results": [
+            [[i, S]]
+        ]
     }
 
     return data
@@ -83,21 +82,9 @@ def calc2(region_id, material_id_1, material_id_2):
 
     data = {
         "region": region_info.name,
-        "material_1": material_info_1.name,
-        "material_2": material_info_2.name,
+        "materials": [material_info_1.name, material_info_2.name],
         "results": []
     }
-
-    # data = {
-    #     "region": region_info.name,
-    #     "materials": [],
-    #     "results": []
-    # }
-    
-    # req_data = request.form
-    # material_count = len(req_data) - 1
-    # for i in material_count:
-    #     data['materials'].append({"material" : material_info[i]})
 
     D = (20 - temperature)*duration
     R = 0.00035*D+1.4
@@ -113,12 +100,9 @@ def calc2(region_id, material_id_1, material_id_2):
             j = j + 1
         S_2 = depth_2 * j
 
-        data['results'].append({
-            "i": i,
-            "j":j,
-            "s1": S_1,
-            "s2": S_2
-        })
+        data['results'].append(
+            [[i, S_1], [j, S_2]]
+        )
 
         if (j == 1):
             break
@@ -144,9 +128,7 @@ def calc3(region_id, material_id_1, material_id_2, material_id_3):
 
     data = {
         "region": region_info.name,
-        "material_1": material_info_1.name,
-        "material_2": material_info_2.name,
-        "material_3": material_info_3.name,
+        "materials": [material_info_1.name, material_info_2.name, material_info_3.name],
         "results": []
     }
 
@@ -167,14 +149,9 @@ def calc3(region_id, material_id_1, material_id_2, material_id_3):
                 k = k + 1
             S_3 = depth_3 * k
             
-            data['results'].append({
-            "i": i,
-            "j":j,
-            "k":k,
-            "s1": S_1,
-            "s2": S_2,
-            "s3": S_3
-            })
+            data['results'].append(
+                [[i, S_1], [j, S_2], [k, S_3]]
+            )
 
             if (k == 1):
                 break
