@@ -43,6 +43,7 @@ def calc1(region_id, material_id):
 
     thermal = float(material_info.thermal)
     depth = float(material_info.depth)
+    price = float(material_info.price)
 
     D = (20 - temperature)*duration
     R = 0.00035*D+1.4
@@ -56,12 +57,13 @@ def calc1(region_id, material_id):
         res = (depth*i)/(thermal*1000)
         i = i + 1
     S = depth * i
+    P = price * i
 
     data = {
         "region": region_info.name,
         "materials": [material_info.name],
         "results": [
-            [[i, S]]
+            [[i, S, P]]
         ]
     }
 
@@ -75,10 +77,12 @@ def calc2(region_id, material_id_1, material_id_2):
     material_info_1 = Material.query.get(material_id_1)
     thermal_1 = float(material_info_1.thermal)
     depth_1 = float(material_info_1.depth)
+    price_1 = float(material_info_1.price)
 
     material_info_2 = Material.query.get(material_id_2)
     thermal_2 = float(material_info_2.thermal)
     depth_2 = float(material_info_2.depth)
+    price_2 = float(material_info_2.price)
 
     data = {
         "region": region_info.name,
@@ -92,6 +96,7 @@ def calc2(region_id, material_id_1, material_id_2):
 
     for i in range(1, 101):
         S_1 = depth_1 * i
+        P_1 = price_1 * i
         R_2 = R - ((depth_1 * i)/(thermal_1*1000))
         j = 1
         res = 0
@@ -99,9 +104,10 @@ def calc2(region_id, material_id_1, material_id_2):
             res = (depth_2*j)/(thermal_2*1000)
             j = j + 1
         S_2 = depth_2 * j
+        P_2 = price_2 * j
 
         data['results'].append(
-            [[i, S_1], [j, S_2]]
+            [[i, S_1, P_1], [j, S_2, P_2]]
         )
 
         if (j == 1):
@@ -117,14 +123,17 @@ def calc3(region_id, material_id_1, material_id_2, material_id_3):
     material_info_1 = Material.query.get(material_id_1)
     thermal_1 = float(material_info_1.thermal)
     depth_1 = float(material_info_1.depth)
+    price_1 = float(material_info_1.price)
 
     material_info_2 = Material.query.get(material_id_2)
     thermal_2 = float(material_info_2.thermal)
     depth_2 = float(material_info_2.depth)
+    price_2 = float(material_info_2.price)
 
     material_info_3 = Material.query.get(material_id_3)
     thermal_3 = float(material_info_3.thermal)
     depth_3 = float(material_info_3.depth)
+    price_3 = float(material_info_3.price)
 
     data = {
         "region": region_info.name,
@@ -139,8 +148,10 @@ def calc3(region_id, material_id_1, material_id_2, material_id_3):
     for i in range(1, 101):
         R_2 = R - ((depth_1 * i)/(thermal_1*1000))
         S_1 = depth_1 * i
+        P_1 = price_1 * i
         for j in range(1, 101):
             S_2 = depth_2 * j
+            P_2 = price_2 * j
             R_3 = R_2 - ((depth_2 * j)/(thermal_2*1000))
             k = 1
             res = 0
@@ -148,9 +159,10 @@ def calc3(region_id, material_id_1, material_id_2, material_id_3):
                 res = (depth_3*k)/(thermal_3*1000)
                 k = k + 1
             S_3 = depth_3 * k
+            P_3 = price_3 * k
             
             data['results'].append(
-                [[i, S_1], [j, S_2], [k, S_3]]
+                [[i, S_1, P_1], [j, S_2, P_2], [k, S_3, P_3]]
             )
 
             if (k == 1):
