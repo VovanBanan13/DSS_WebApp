@@ -1,6 +1,8 @@
 # DSS_WebApp
 Web-приложение для системы поддержки принятия решения по выбору материалов для ограждающих конструкций
 Web application with use Python, Flask, SQLite
+
+`Ссылка` https://materialcalc.herokuapp.com/
 # Запуск и настройка первоначальных настроек Python и других утилит через командную строку Windows (cmd)
 
 Переход к каталогу
