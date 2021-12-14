@@ -3,6 +3,11 @@ Web-приложение для системы поддержки приняти
 Web application with use Python, Flask, SQLite
 
 `Ссылка` https://materialcalc.herokuapp.com/
+
+`Docker` 
+```
+docker run -d -p 5000:5000 vovanbanan13/dss_webapp
+```
 # Запуск и настройка первоначальных настроек Python и других утилит через командную строку Windows (cmd)
 
 Переход к каталогу
